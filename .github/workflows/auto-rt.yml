@@ -1,0 +1,17 @@
+# Periodically check (with cron) whether a new message (containing a tweet) arrives from the specified twitter account (preferrably my own primary account)
+
+name: Auto-RT from DM
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  do:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3.0.0
+      - run: npm ci
+      - run: node main.js
