@@ -1,0 +1,22 @@
+{
+  "name": "dm-auto-retweet",
+  "private": true,
+  "description": "A twitter bot app to automatically retweet tweets sent via DM from a specific person/account",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comfyte/DM-auto-retweet.git"
+  },
+  "author": "Farrel R",
+  "bugs": {
+    "url": "https://github.com/comfyte/DM-auto-retweet/issues"
+  },
+  "homepage": "https://github.com/comfyte/DM-auto-retweet#readme",
+  "dependencies": {
+    "node-fetch": "^3.2.3"
+  }
+}
