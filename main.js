@@ -13,7 +13,7 @@ const lastDmTimestamp = await (async (fileName) => {
         if (err.code === 'ENOENT') {
             const currentTimestamp = Date.now();
             await writeFile(fileName, currentTimestamp.toString());
-            return currentTimestamp
+            return currentTimestamp;
         }
         else {
             throw err;
