@@ -42,12 +42,13 @@ try {
     const tweetIds = preparedData.map((item) => {
         const tweetUrl = item.message_create.message_data.entites.urls.expanded_url;
         const [,tweetId] = tweetUrl.match(/\/status\/(\d+)/);
-        console.log(tweetId);
-        return tweetId;
+        const senderId = item.message_create.sender_id;
+        console.log(`${tweetId} (by user ID ${senderId})`);
+        return [tweetId, senderId];
     });
     console.log('\n');
 
-    for (const tweetId of tweetIds) {
+    for (const [tweetId, senderId] of tweetIds) {
         const rtApiResponse = await twFetchWithOauth1a(`/2/users/${SELF_ID}/retweets`, {
             method: 'POST',
             headers: {
@@ -60,6 +61,28 @@ try {
 
         if (rtApiResponse.ok) {
             console.log(`Successfully retweeted tweet ID ${tweetId}`);
+
+            // Send a response to the sender
+            await twFetchWithOauth1a('/1.1/direct_messages/events/new.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event: {
+                        type: 'message_create',
+                        message_create: {
+                            target: {
+                                recipient_id: senderId
+                            },
+                            message_data: {
+                                text: `Tweet with ID ${tweetId} was successfully retweeted!`
+                            }
+                        }
+                    },
+                    
+                })
+            })
         }
         else {
             console.log(`Error retweeting tweet ID ${tweetId} (${rtApiResponse.status} ${rtApiResponse.statusText})`);
