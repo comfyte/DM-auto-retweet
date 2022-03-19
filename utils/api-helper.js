@@ -35,7 +35,7 @@ export async function twFetchWithOauth1a(path, options) {
     const parameters = objectToUrlEncoded({
         ...queryParams,
         ...oauthValues,
-        ...(headers['Content-Type'] === 'application/json' ? JSON.parse(body) : {})
+        ...(headers?.['Content-Type'] === 'application/json' ? JSON.parse(body) : {})
     });
 
     const oauthSignatureBase = [method.toUpperCase(), url, parameters]
