@@ -82,10 +82,32 @@ try {
                     },
                     
                 })
-            })
+            });
         }
         else {
             console.log(`Error retweeting tweet ID ${tweetId} (${rtApiResponse.status} ${rtApiResponse.statusText})`);
+
+            // Send a failure feedback
+            await twFetchWithOauth1a('/1.1/direct_messages/events/new.json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event: {
+                        type: 'message_create',
+                        message_create: {
+                            target: {
+                                recipient_id: senderId
+                            },
+                            message_data: {
+                                text: `Failed to retweet tweet with ID ${tweetId} :(`
+                            }
+                        }
+                    },
+                    
+                })
+            });
         }
     }
 
