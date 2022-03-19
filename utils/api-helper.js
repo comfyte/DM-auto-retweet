@@ -21,7 +21,11 @@ export async function twFetchWithOauth1a(path, options) {
     const [url, _queryParams] = (TWITTER_API_BASE_URL + path).split('?');
     const queryParams = urlEncodedToObject(_queryParams);
 
-    const { method, headers, body } = options ?? { method: 'GET' };
+    const { method, headers } = options ?? { method: 'GET' };
+
+    if (headers?.['Content-Type'] === 'application/x-www-form-urlencoded') {
+        throw new Error('Unimplemented yet!');
+    }
 
     const oauthValues = {
         oauth_consumer_key: OAUTH_CONSUMER_KEY,
@@ -35,7 +39,6 @@ export async function twFetchWithOauth1a(path, options) {
     const parameters = objectToUrlEncoded({
         ...queryParams,
         ...oauthValues,
-        ...(headers?.['Content-Type'] === 'application/json' ? JSON.parse(body) : {})
     });
 
     const oauthSignatureBase = [method.toUpperCase(), url, parameters]

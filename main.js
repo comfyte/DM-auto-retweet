@@ -40,7 +40,7 @@ try {
 
     console.log('List of tweets to be retweeted:');
     const tweetIds = preparedData.map((item) => {
-        const tweetUrl = item.message_create.message_data.entites.urls.expanded_url;
+        const tweetUrl = item.message_create.message_data.entities.urls[0].expanded_url;
         const [,tweetId] = tweetUrl.match(/\/status\/(\d+)/);
         const senderId = item.message_create.sender_id;
         console.log(`${tweetId} (by user ID ${senderId})`);
