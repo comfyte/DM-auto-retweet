@@ -32,4 +32,7 @@ jobs:
           TIMESTAMP_FILENAME="last-dm-timestamp"
           git add $TIMESTAMP_FILENAME
           git commit -m "Update recorded timestamp to $(cat $TIMESTAMP_FILENAME)"
-          git push
+
+          if [ $0 -eq 0 ]; then
+            git push
+          fi

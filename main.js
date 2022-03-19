@@ -28,14 +28,14 @@ try {
     const {
         events: dmData,
         next_cursor
-    } = await twFetchWithOauth1a('/1.1/direct_messages/events/list.json').then((res) => res.text());
+    } = await twFetchWithOauth1a('/1.1/direct_messages/events/list.json').then((res) => res.json());
 
     const preparedData = dmData.filter(({ created_timestamp, type, message_create }) => (
         parseInt(created_timestamp) > lastDmTimestamp &&
         type === 'message_create' &&
         message_create.sender_id !== SELF_ID &&
         allowedSenders.includes(message_create.sender_id) &&
-        message_create.message_data.entites.urls.length === 1
+        message_create.message_data.entities.urls.length === 1
     ));
 
     console.log('List of tweets to be retweeted:');
@@ -66,7 +66,9 @@ try {
         }
     }
 
-    await writeFile(TIMESTAMP_FILENAME, preparedData[0].created_timestamp);
+    if (preparedData.length) {
+        await writeFile(TIMESTAMP_FILENAME, preparedData[0].created_timestamp);
+    }
 }
 catch (err) {
     throw err;
