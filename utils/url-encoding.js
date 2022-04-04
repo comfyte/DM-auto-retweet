@@ -1,3 +1,4 @@
+/** @param {string} encodedString */
 export function urlEncodedToObject(encodedString) {
     const result = {};
     const iterator = new URLSearchParams(encodedString).entries();
@@ -8,6 +9,7 @@ export function urlEncodedToObject(encodedString) {
     return result;
 }
 
+/** @param {Object} obj */
 export function objectToUrlEncoded(obj) {
     return Object.entries(obj)
         .map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))

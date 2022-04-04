@@ -1,9 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
-
-import { twFetchWithOauth1a } from './utils/api-helper.js';
-
-const SELF_ID = '1235554825380614144';
-const TIMESTAMP_FILENAME = 'last-dm-timestamp';
+import * as twApi from './api-helpers';
+import { TIMESTAMP_FILENAME } from './constants.js';
 
 const lastDmTimestamp = await (async (fileName) => {
     try {
@@ -24,11 +21,8 @@ const lastDmTimestamp = await (async (fileName) => {
 const allowedSenders = (await readFile('allowed-senders', 'utf-8')).split('\n');
 
 try {
-    // FIXME: Also account for the other property (cursor)
-    const {
-        events: dmData,
-        next_cursor
-    } = await twFetchWithOauth1a('/1.1/direct_messages/events/list.json').then((res) => res.json());
+    // Do we need to also account for the next_cursor if we're periodically checking it anyway?
+    const { events: dmData } = await twApi.getDirectMessages();
 
     const preparedData = dmData.filter(({ created_timestamp, type, message_create }) => (
         parseInt(created_timestamp) > lastDmTimestamp &&
@@ -49,64 +43,22 @@ try {
     console.log('\n');
 
     for (const [tweetId, senderId] of tweetIds) {
-        const rtApiResponse = await twFetchWithOauth1a(`/2/users/${SELF_ID}/retweets`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                tweet_id: tweetId
-            })
-        });
+        const rtApiResponse = await twApi.doRetweet(tweetId);
 
         if (rtApiResponse.ok) {
             console.log(`Successfully retweeted tweet ID ${tweetId}`);
 
             // Send a response to the sender
-            await twFetchWithOauth1a('/1.1/direct_messages/events/new.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: {
-                        type: 'message_create',
-                        message_create: {
-                            target: {
-                                recipient_id: senderId
-                            },
-                            message_data: {
-                                text: `Tweet with ID ${tweetId} was successfully retweeted!`
-                            }
-                        }
-                    },
-                    
-                })
+            await twApi.sendDirectMessage(senderId, {
+                text: `Retweeted "${tweetId}"`
             });
         }
         else {
             console.log(`Error retweeting tweet ID ${tweetId} (${rtApiResponse.status} ${rtApiResponse.statusText})`);
 
             // Send a failure feedback
-            await twFetchWithOauth1a('/1.1/direct_messages/events/new.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: {
-                        type: 'message_create',
-                        message_create: {
-                            target: {
-                                recipient_id: senderId
-                            },
-                            message_data: {
-                                text: `Failed to retweet tweet with ID ${tweetId} :(`
-                            }
-                        }
-                    },
-                    
-                })
+            await twApi.sendDirectMessage(senderId, {
+                text: `Failed to retweet tweet "${tweetId}" :(`
             });
         }
     }
@@ -116,5 +68,6 @@ try {
     }
 }
 catch (err) {
+    // TODO: Handle errors properly
     throw err;
 }

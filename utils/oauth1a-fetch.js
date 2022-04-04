@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import crypto from 'crypto';
 
 import { genRandomString } from './generate-random-string.js';
-import { objectToUrlEncoded, urlEncodedToObject } from './url-encoding-helper.js';
+import { objectToUrlEncoded, urlEncodedToObject } from './url-encoding.js';
 
 const TWITTER_API_BASE_URL = "https://api.twitter.com";
 const {
