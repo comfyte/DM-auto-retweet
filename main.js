@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 import * as twApi from './api-helpers/index.js';
-import { TIMESTAMP_FILENAME } from './constants.js';
+import { TIMESTAMP_FILENAME, SELF_ID } from './constants.js';
 
 const lastDmTimestamp = await (async (fileName) => {
     try {
