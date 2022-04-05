@@ -1,10 +1,6 @@
-import { twFetchWithOauth1a } from '../utils/oauth1a-fetch.js';
+import { twFetchWithOauth1a } from '../utils/oauth1a-fetch';
 
-/**
- * @param {string} recipient_id
- * @param {string} message_data
- */
-export const sendDirectMessage = async (recipient_id, message_data) => await twFetchWithOauth1a(
+export const sendDirectMessage = async (recipient_id: string, message_data: any) => await twFetchWithOauth1a(
     '/1.1/direct_messages/events/new.json',
     {
         method: 'POST',

@@ -1,10 +1,9 @@
 import fetch from 'node-fetch';
 import crypto from 'crypto';
+import { genRandomString } from './generate-random-string';
+import { objectToUrlEncoded, urlEncodedToObject } from './url-encoding';
+import { TWITTER_API_BASE_URL } from '../constants';
 
-import { genRandomString } from './generate-random-string.js';
-import { objectToUrlEncoded, urlEncodedToObject } from './url-encoding.js';
-
-const TWITTER_API_BASE_URL = "https://api.twitter.com";
 const {
     OAUTH_CONSUMER_KEY,
     OAUTH_CONSUMER_SECRET,
@@ -12,8 +11,7 @@ const {
     OAUTH_TOKEN_SECRET
 }= process.env;
 
-/** @type {import('node-fetch').default} */
-export async function twFetchWithOauth1a(path, options) {
+export const twFetchWithOauth1a: typeof fetch = async (path: string, options) => {
     if (path.match(/\?/g)?.length > 1) {
         throw new Error();
     }
@@ -46,13 +44,12 @@ export async function twFetchWithOauth1a(path, options) {
         .join('&');
 
 
-    oauthValues.oauth_signature = encodeURIComponent(crypto.createHmac('sha1', encodeURIComponent(OAUTH_CONSUMER_SECRET) + '&' + encodeURIComponent(OAUTH_TOKEN_SECRET))
+    (oauthValues as any).oauth_signature = encodeURIComponent(crypto.createHmac('sha1', encodeURIComponent(OAUTH_CONSUMER_SECRET) + '&' + encodeURIComponent(OAUTH_TOKEN_SECRET))
         .update(oauthSignatureBase)
         .digest('base64')
     );
 
-
-    return await fetch(url, {
+    return fetch(url, {
         ...options,
         headers: {
             ...headers,
