@@ -1,10 +1,10 @@
 import { readFile, readdir } from 'fs/promises';
 import * as twApi from '../twitter-apis/index.js';
 import { SELF_ID } from '../constants.js';
+import allowedSenderIds from '../allowed-sender-ids.js';
 
 console.log(process.cwd());
 console.log(await readdir(process.cwd()));
-const allowedSenders = (await readFile('allowed-senders-id', 'utf-8')).split('\n');
 
 /** @param {import('@vercel/node').VercelRequestBody} requestBody */
 export async function processDmForRetweeting(requestBody) {
@@ -13,7 +13,7 @@ export async function processDmForRetweeting(requestBody) {
             .filter(({ type, message_create }) => (
                 type === 'message_create' &&
                 message_create.sender_id !== SELF_ID &&
-                allowedSenders.includes(message_create.sender_id) &&
+                allowedSenderIds.includes(message_create.sender_id) &&
                 message_create.message_data.entities.urls.length === 1
             ))
             .map((item) => {
