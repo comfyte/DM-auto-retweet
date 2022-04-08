@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 import * as twApi from '../twitter-apis/index.js';
 import { SELF_ID } from '../constants.js';
 
-const allowedSenders = (await readFile('../allowed-senders-id', 'utf-8')).split('\n');
+const allowedSenders = (await readFile('allowed-senders-id', 'utf-8')).split('\n');
 
 /** @param {import('@vercel/node').VercelRequestBody} requestBody */
 export async function processDmForRetweeting(requestBody) {
