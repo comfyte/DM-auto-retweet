@@ -1,4 +1,5 @@
-export function urlEncodedToObject(encodedString: string) {
+/** @param {string} encodedString */
+export function urlEncodedToObject(encodedString) {
     const result = {};
     const iterator = new URLSearchParams(encodedString).entries();
     // It's supposedly already decoded, apparently
@@ -8,7 +9,8 @@ export function urlEncodedToObject(encodedString: string) {
     return result;
 }
 
-export function objectToUrlEncoded(obj: { [key: string]: string | number }) {
+/** @param {Object.<string, string | number>} obj */
+export function objectToUrlEncoded(obj) {
     return Object.entries(obj)
         .map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))
         .sort() // Just sort it anyway

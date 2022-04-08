@@ -1,6 +1,5 @@
-import type { VercelRequest } from '@vercel/node';
-
-export async function rawBody(requestObject: VercelRequest) {
+/** @param {import('@vercel/node'.VercelRequest)} requestObject */
+export async function rawBody(requestObject) {
     let chunks = [];
 
 

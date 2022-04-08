@@ -2,11 +2,16 @@ import crypto from 'crypto';
 
 const { OAUTH_CONSUMER_SECRET } = process.env;
 
-export function processTwitterCrc(crcToken: string) {
+/** @param {string} crcToken */
+export function processTwitterCrc(crcToken) {
     return crypto.createHmac('sha256', OAUTH_CONSUMER_SECRET).update(crcToken).digest('base64');
 }
 
-export function verifyRequestHash(requestBody: string, retrievedHash: string) {
+/**
+ * @param {string} requestBody
+ * @param {string} retrievedHash
+ */
+export function verifyRequestHash(requestBody, retrievedHash) {
     const calculatedHash = crypto.createHmac('sha256', OAUTH_CONSUMER_SECRET).update(requestBody).digest('base64');
     return retrievedHash === calculatedHash;
 }

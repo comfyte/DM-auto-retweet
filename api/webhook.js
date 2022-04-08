@@ -1,10 +1,12 @@
-import { processTwitterCrc, verifyRequestHash } from '../utils/webhook-security-check';
-import { processDmForRetweeting } from '../functionalities/dm-to-retweet';
-import { rawBody } from '../utils/collect-raw-body';
+import { processTwitterCrc, verifyRequestHash } from '../utils/webhook-security-check.js';
+import { processDmForRetweeting } from '../functionalities/dm-to-retweet.js';
+import { rawBody } from '../utils/collect-raw-body.js';
 
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default async function twitterWebhook(req: VercelRequest, res: VercelResponse) {
+/**
+ * @param {import('@vercel/node').VercelRequest} req 
+ * @param {import('@vercel/node').VercelResponse} res 
+ */
+export default async function twitterWebhook(req, res) {
     // Handle the occassional CRC check calls from twitter
     if (req.method === 'GET' && typeof req.query.crc_token === 'string') {
         const result = processTwitterCrc(req.query.crc_token);
@@ -22,8 +24,8 @@ export default async function twitterWebhook(req: VercelRequest, res: VercelResp
     }
 
     if (req.method === 'POST' && req.body.direct_message_events) {
-        // Doesn't this always return true anyway?
-        const success = await processDmForRetweeting(req.body);
-        res.status(success ? 200 : 400).end();
+        // if (allowedSenders.includes(req.body.dm.blablabla?)) { [???]
+        await processDmForRetweeting(req.body);
+        res.status(200).end();
     }
 }

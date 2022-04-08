@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 import crypto from 'crypto';
-import { genRandomString } from '../generate-random-string';
-import { objectToUrlEncoded, urlEncodedToObject } from '../url-encoding';
-import { TWITTER_API_BASE_URL } from '../../constants';
+import { genRandomString } from '../generate-random-string.js';
+import { objectToUrlEncoded, urlEncodedToObject } from '../url-encoding.js';
+import { TWITTER_API_BASE_URL } from '../../constants.js';
 
 // Required environment variables for auth
 const {
@@ -12,7 +12,11 @@ const {
     OAUTH_TOKEN_SECRET
 }= process.env;
 
-export const twFetchWithUserContextAuth: typeof fetch = async (path: string, options) => {
+/**
+ * @type {fetch}
+ * @param {string} path (Override the original param type from `fetch`)
+ */
+export const twFetchWithUserContextAuth = async (path, options) => {
     // Check first if those required env variables actually exist/provided
     if (!OAUTH_CONSUMER_KEY || !OAUTH_CONSUMER_SECRET || !OAUTH_TOKEN || !OAUTH_TOKEN_SECRET) {
         throw new ReferenceError('One or more of the required OAuth environment variable(s) are missing!');
@@ -50,7 +54,7 @@ export const twFetchWithUserContextAuth: typeof fetch = async (path: string, opt
         .join('&');
 
 
-    (oauthValues as any).oauth_signature = encodeURIComponent(crypto.createHmac('sha1', encodeURIComponent(OAUTH_CONSUMER_SECRET) + '&' + encodeURIComponent(OAUTH_TOKEN_SECRET))
+    oauthValues.oauth_signature = encodeURIComponent(crypto.createHmac('sha1', encodeURIComponent(OAUTH_CONSUMER_SECRET) + '&' + encodeURIComponent(OAUTH_TOKEN_SECRET))
         .update(oauthSignatureBase)
         .digest('base64')
     );

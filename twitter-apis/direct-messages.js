@@ -1,6 +1,10 @@
-import { twFetchWithUserContextAuth } from '../utils/fetch-helpers/with-user-context-auth';
+import { twFetchWithUserContextAuth } from '../utils/fetch-helpers/with-user-context-auth.js';
 
-export const sendDirectMessage = async (recipient_id: string, message_data: any) => await twFetchWithUserContextAuth(
+/**
+ * @param {string} recipient_id
+ * @param {any} message_data
+ */
+export const sendDirectMessage = async (recipient_id, message_data) => await twFetchWithUserContextAuth(
     '/1.1/direct_messages/events/new.json',
     {
         method: 'POST',

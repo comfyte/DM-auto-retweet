@@ -1,8 +1,10 @@
 const CHARACTER_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-const randomNumber = (range: number) => Math.floor(Math.random() * range);
+/** @param {number} range */
+const randomNumber = (range) => Math.floor(Math.random() * range);
 
-export function genRandomString(length: number) {
+/** @param {number} length */
+export function genRandomString(length) {
     let result = '';
 
     for (let i = 0; i < length; ++i) {
