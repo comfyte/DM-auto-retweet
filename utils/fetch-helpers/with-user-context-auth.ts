@@ -1,9 +1,10 @@
 import fetch from 'node-fetch';
 import crypto from 'crypto';
-import { genRandomString } from './generate-random-string';
-import { objectToUrlEncoded, urlEncodedToObject } from './url-encoding';
-import { TWITTER_API_BASE_URL } from '../constants';
+import { genRandomString } from '../generate-random-string';
+import { objectToUrlEncoded, urlEncodedToObject } from '../url-encoding';
+import { TWITTER_API_BASE_URL } from '../../constants';
 
+// Required environment variables for auth
 const {
     OAUTH_CONSUMER_KEY,
     OAUTH_CONSUMER_SECRET,
@@ -11,7 +12,12 @@ const {
     OAUTH_TOKEN_SECRET
 }= process.env;
 
-export const twFetchWithOauth1a: typeof fetch = async (path: string, options) => {
+export const twFetchWithUserContextAuth: typeof fetch = async (path: string, options) => {
+    // Check first if those required env variables actually exist/provided
+    if (!OAUTH_CONSUMER_KEY || !OAUTH_CONSUMER_SECRET || !OAUTH_TOKEN || !OAUTH_TOKEN_SECRET) {
+        throw new ReferenceError('One or more of the required OAuth environment variable(s) are missing!');
+    }
+
     if (path.match(/\?/g)?.length > 1) {
         throw new Error();
     }

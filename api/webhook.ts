@@ -1,5 +1,5 @@
 import { processTwitterCrc, verifyRequestHash } from '../utils/webhook-security-check';
-import { processDmForRetweeting } from '../functionalities/process-dm-for-retweeting';
+import { processDmForRetweeting } from '../functionalities/dm-to-retweet';
 import { rawBody } from '../utils/collect-raw-body';
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';

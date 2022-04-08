@@ -1,6 +1,6 @@
-import { twFetchWithOauth1a } from '../utils/oauth1a-fetch';
+import { twFetchWithUserContextAuth } from '../utils/fetch-helpers/with-user-context-auth';
 
-export const sendDirectMessage = async (recipient_id: string, message_data: any) => await twFetchWithOauth1a(
+export const sendDirectMessage = async (recipient_id: string, message_data: any) => await twFetchWithUserContextAuth(
     '/1.1/direct_messages/events/new.json',
     {
         method: 'POST',
@@ -21,4 +21,4 @@ export const sendDirectMessage = async (recipient_id: string, message_data: any)
 );
 
 export const getDirectMessages = async () =>
-    await twFetchWithOauth1a('/1.1/direct_messages/events/list.json').then((res) => res.json());
+    await twFetchWithUserContextAuth('/1.1/direct_messages/events/list.json').then((res) => res.json());
