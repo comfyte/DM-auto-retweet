@@ -1,10 +1,6 @@
-import { readFile, readdir } from 'fs/promises';
 import * as twApi from '../twitter-apis/index.js';
 import { SELF_ID } from '../constants.js';
 import allowedSenderIds from '../allowed-sender-ids.js';
-
-console.log(process.cwd());
-console.log(await readdir(process.cwd()));
 
 /** @param {import('@vercel/node').VercelRequestBody} requestBody */
 export async function processDmForRetweeting(requestBody) {
