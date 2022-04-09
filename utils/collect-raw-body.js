@@ -1,16 +1,19 @@
-/** @param {import('@vercel/node'.VercelRequest)} requestObject */
-export async function rawBody(requestObject) {
+/** @param {import('@vercel/node'.VercelRequest)} requestObj */
+export async function rawBody(requestObj) {
     let chunks = [];
 
+    requestObj.on('error', () => {
+        throw new Error();
+    })
 
-    requestObject.on('data', (chunk) => {
+    requestObj.on('data', (chunk) => {
         chunks.push(chunk);
     });
 
     const finalRawBody = await new Promise<string>((resolve) => {
-        requestObject.on('end', () => {
+        requestObj.on('end', () => {
             const result = Buffer.concat(chunks).toString('utf-8');
-            resolve(result)
+            resolve(result);
         });
     });
 
