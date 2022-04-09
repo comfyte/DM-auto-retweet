@@ -29,7 +29,7 @@ function checkEnvExistence(...variables) {
  * @returns {Promise<Response>}
  */
 export const twFetch = async (path, options, authenticationType) => {
-    const url = TWITTER_API_BASE_URL + path;
+    const requestUrl = TWITTER_API_BASE_URL + path;
     const { method, headers } = options ?? { method: 'GET' };
 
     const authorizationHeaderValue = ((authType) => {
@@ -45,7 +45,7 @@ export const twFetch = async (path, options, authenticationType) => {
                 if (path.match(/\?/g)?.length > 1) {
                     throw new Error();
                 }
-                const [, _queryParams] = url.split('?');
+                const [requestBaseUrl, _queryParams] = requestUrl.split('?');
                 const queryParams = urlEncodedToObject(_queryParams);
 
                 if (headers?.['Content-Type'] === 'application/x-www-form-urlencoded') {
@@ -57,7 +57,7 @@ export const twFetch = async (path, options, authenticationType) => {
                     oauth_token: OAUTH_TOKEN,
                     oauth_signature_method: 'HMAC-SHA1',
                     oauth_timestamp: Math.floor(Date.now() / 1000),
-                    oauth_nonce: Buffer.from(genRandomString(32)).toString('base64').replaceAll(/[^\w]/g, ''),
+                    oauth_nonce: Buffer.from(genRandomString(32)).toString('base64').replace(/[^\w]/g, ''),
                     oauth_version: '1.0'
                 };
 
@@ -66,10 +66,9 @@ export const twFetch = async (path, options, authenticationType) => {
                     ...oauthValues,
                 });
 
-                const oauthSignatureBase = [method.toUpperCase(), url, parameters]
+                const oauthSignatureBase = [method.toUpperCase(), requestBaseUrl, parameters]
                     .map((stringValue) => encodeURIComponent(stringValue))
                     .join('&');
-
 
                 oauthValues.oauth_signature = encodeURIComponent(crypto.createHmac('sha1', encodeURIComponent(OAUTH_CONSUMER_SECRET) + '&' + encodeURIComponent(OAUTH_TOKEN_SECRET))
                     .update(oauthSignatureBase)
@@ -83,7 +82,7 @@ export const twFetch = async (path, options, authenticationType) => {
         }
     })(authenticationType);
 
-    return fetch(url, {
+    return fetch(requestUrl, {
         ...options,
         headers: {
             ...headers,

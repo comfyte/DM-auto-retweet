@@ -3,7 +3,7 @@ import crypto from 'crypto';
 const { OAUTH_CONSUMER_SECRET } = process.env;
 
 /** @param {string} crcToken */
-export function processTwitterCrc(crcToken) {
+export function solveTwitterCrc(crcToken) {
     return crypto.createHmac('sha256', OAUTH_CONSUMER_SECRET).update(crcToken).digest('base64');
 }
 
