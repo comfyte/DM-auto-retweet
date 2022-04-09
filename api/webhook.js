@@ -7,7 +7,7 @@ import { rawBody } from '../utils/collect-raw-body.js';
  * @param {import('@vercel/node').VercelResponse} res 
  */
 export default async function twitterWebhook(req, res) {
-    // console.log(`Retrieved payload: ${JSON.stringify(req.body)}`)
+    console.log(`Retrieved payload: ${JSON.stringify(req.body, null, 4)}`)
 
     // Handle the occassional CRC check calls from twitter
     if (req.method === 'GET' && typeof req.query.crc_token === 'string') {
