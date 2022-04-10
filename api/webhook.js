@@ -1,10 +1,11 @@
 import { solveTwitterCrc, verifyRequestHash } from '../utils/webhook-security-check.js';
 import { processDmForRetweeting } from '../functionalities/dm-to-retweet.js';
 import { rawBody } from '../utils/collect-raw-body.js';
+import { SELF_ID } from '../constants.js';
 
 /**
- * @param {import('@vercel/node').VercelRequest} req 
- * @param {import('@vercel/node').VercelResponse} res 
+ * @param {import('@vercel/node').VercelRequest} req
+ * @param {import('@vercel/node').VercelResponse} res
  */
 export default async function twitterWebhook(req, res) {
     console.log(`Retrieved payload: ${JSON.stringify(req.body, null, 4)}`)
@@ -23,8 +24,17 @@ export default async function twitterWebhook(req, res) {
         return;
     }
 
+    // This will theoretically never happen but we check it anyway
+    if (req.body.for_user_id !== SELF_ID) {
+        res.status(404).end();
+        return;
+    }
+
     if (req.method === 'POST' && req.body.direct_message_events) {
         await processDmForRetweeting(req.body);
         res.status(200).end();
+        return;
     }
+
+    res.status(404).end();
 }

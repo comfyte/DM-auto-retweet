@@ -16,7 +16,6 @@ export async function processDmForRetweeting(requestBody) {
                 const tweetUrl = item.message_create.message_data.entities.urls[0].expanded_url;
                 const [, tweetId] = tweetUrl.match(/\/status\/(\d+)/);
                 const senderId = item.message_create.sender_id;
-                console.log(`${tweetId} (by user ID ${senderId})`);
                 return [tweetId, senderId];
             });
 
@@ -29,7 +28,7 @@ export async function processDmForRetweeting(requestBody) {
 
                 // Send a response to the sender
                 await twApi.sendDirectMessage(senderId, {
-                    text: `Retweeted "${tweetId}"`
+                    text: `Retweeted tweet ${tweetId}`
                 });
             }
             else {
@@ -37,7 +36,7 @@ export async function processDmForRetweeting(requestBody) {
 
                 // Send a failure feedback
                 await twApi.sendDirectMessage(senderId, {
-                    text: `Failed to retweet tweet "${tweetId}" :(`
+                    text: `Failed to retweet tweet ${tweetId} :(`
                 });
             }
 
