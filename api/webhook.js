@@ -17,10 +17,8 @@ export default async function twitterWebhook(req, res) {
     }
 
     // Verify the request hash first
-    if (
-        typeof req.headers['x-twitter-webhooks-signature'] === 'string' &&
-        !verifyRequestHash(await rawBody(req), req.headers['x-twitter-webhooks-signature'])
-    ) {
+    const [, retrievedSignature] = req.headers['x-twitter-webhooks-signature']?.match(/^sha256=(.+)$/) ?? [];
+    if (!verifyRequestHash(await rawBody(req), retrievedSignature)) {
         res.status(401).end();
         return;
     }
