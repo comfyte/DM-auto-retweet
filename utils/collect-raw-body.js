@@ -10,7 +10,7 @@ export async function rawBody(requestObj) {
         chunks.push(chunk);
     });
 
-    const finalRawBody = await new Promise<string>((resolve) => {
+    const finalRawBody = await new Promise((resolve) => {
         requestObj.on('end', () => {
             const result = Buffer.concat(chunks).toString('utf-8');
             resolve(result);
