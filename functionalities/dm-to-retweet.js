@@ -2,6 +2,36 @@ import * as twApi from '../twitter-apis/index.js';
 import { SELF_ID } from '../constants.js';
 import allowedSenderIds from '../allowed-sender-ids.js';
 
+// A small set of helper functions
+let rtTimeoutHandle = null;
+let rtFunction;
+const createRtTimeout = () => {
+    rtTimeoutHandle = setTimeout(rtFunction, 1000);
+}
+const resolveRtTimeout = () => {
+    clearTimeout(rtTimeoutHandle);
+    rtTimeoutHandle(/*the parasms/args must be needed badly???*/);
+}
+
+async function queueRetweet(arg, senderId) {
+    if (typeof arg === 'boolean' && arg === false) {
+        clearTimeout(rtTimeoutHandle);
+        return;
+    }
+
+    if (typeof arg === 'string' && senderId) {
+        const tweetId = arg;
+
+        await twApi.sendDirectMessage(senderId, {
+            text: `Retweeting tweet ${tweetId} in 10 seconds. Send 'C' to cancel.`
+        });
+        rtTime
+        return;
+    }
+
+    throw new SyntaxError("Function call doens't match the function signature!");
+}
+
 /** @param {import('@vercel/node').VercelRequestBody} requestBody */
 export async function processDmForRetweeting(requestBody) {
     try {
